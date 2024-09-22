@@ -1,6 +1,6 @@
-# Morphic
+# Semantic-search
 
-An AI-powered search engine with a generative UI.
+An AI-powered search engine with a generative UI --- which looks like OPENAI.
 
 ![capture](/public/capture-240404_blk.png)
 
