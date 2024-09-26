@@ -1,0 +1,40 @@
+# This is a Docker Compose file for setting up the morphic-stack environment.
+
+name: morphic-stack
+services:
+  app:
+    build: nodejs
+    command: sleep infinity
+    env_file: .env
+    working_dir: $PWD
+    volumes:
+      - $PWD:$PWD
+      - ~/.ssh:/home/node/.ssh
+      - ~/.gitconfig:/home/node/.gitconfig
+      - pnpm-store:/pnpm-store
+    depends_on:
+      - redis
+      - searxng
+
+  redis:
+    image: redis:alpine
+    # ports:
+    #   - 6379:6379
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+
+  searxng:
+    image: searxng/searxng
+    ports:
+      - '${SEARXNG_PORT:-8080}:8080'
+    env_file: ../.env.local # can remove if you want to use env variables or in settings.yml
+    volumes:
+      - ./searxng/limiter.toml:/etc/searxng/limiter.toml
+      - ./searxng/settings.yml:/etc/searxng/settings.yml
+      - ./searxng/data:/data
+
+volumes:
+  pnpm-store:
+    external: true
+  redis-data:
